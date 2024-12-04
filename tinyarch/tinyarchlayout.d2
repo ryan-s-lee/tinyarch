@@ -1,0 +1,88 @@
+vars: {
+    d2-config: {
+        layout-engine: tala
+    }
+}
+
+# modules
+register_file: {
+    i: {
+        reg_1
+    }
+    o: {
+        op_1
+        op_2
+    }
+}
+
+special_regs: {
+}
+
+alu: {
+    i: {
+        op_1
+        op_2
+    }
+    o: {
+        result
+    }
+}
+
+data_mem: {
+    i: {
+        rd_addr
+        wr_enable
+        wr_value
+    }
+
+    o: {
+        rd_value
+    }
+}
+
+instr_mem: {
+    i: {
+        addr
+    }
+
+    o: {
+        rd_value
+    }
+}
+
+# internally contains current address
+instr_fetcher: {
+    i: {
+        jump_addr
+        jump_sig
+        en
+    }
+    o: {
+        next_instr_addr
+    }
+}
+
+control_unit: {
+    i: {
+        instr
+    }
+    o: {
+        jump
+        wr_en
+        use_imm
+    }
+}
+
+immediate_selector: {
+    i: {
+        instr
+        selector
+    }
+    o: {
+        imm
+    }
+}
+
+# connections
+instr_fetcher.o.next_instr_addr -> instr_mem.i.addr
+instr_mem.o.rd_value -> control_unit.i.instr

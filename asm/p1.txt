@@ -1,0 +1,85 @@
+mvi 0           
+sfp r7
+sac r2          
+ldi 0
+sac r0          
+ldi 1        
+mov r1 r0       
+mvi 0x80        
+ban r7
+nzs 4
+mvi .get_exp hi
+mov r6 r7
+mvi .get_exp lo
+jmp
+sac r2
+bne
+adi 1
+sac r1
+bne
+adc
+sac r3
+mov r3 r1
+bor r2 r3
+nzs 4
+sac r1  
+sti 3
+sti 2
+ext
+mvi -1
+mov r3 r7
+sac r1
+rsi 1
+sac r2
+sho
+sac r3
+adi 1
+sac r4
+mov r4 r1
+bor r2
+lne
+nzs 4
+mvi .get_exp_l hi
+mov r6 r7
+mvi .get_exp_l lo
+jmp
+sac r4
+mov r4 r3   
+bne         
+adi 1
+mvi 10      
+adr r7
+sac r1
+ldi 1
+sac r2
+ldi 0
+sac r5      
+mov r5 r4
+mvi 0x80    
+ban r7
+nzs 5       
+sac r2      
+lsr r4      
+sac r1      
+sho
+skp 7       
+sac r4      
+bne
+adi 1
+sac r1      
+rsr r4
+sac r2      
+sho
+sac r1
+mvi 0x03    
+ban r7      
+sac r3
+mvi 15
+adr r7
+lsi 2
+bor r0
+bor r1
+sti 3
+sac r2
+sti 2
+ext

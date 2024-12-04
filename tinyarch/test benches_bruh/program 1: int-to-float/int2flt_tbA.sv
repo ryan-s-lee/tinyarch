@@ -76,6 +76,7 @@ module int2flt_tbA ();
     logic        sgn;
     logic [ 4:0] exp_dut;
     logic [11:0] mant_dut;
+    $readmemb("p1.bin", f3.instr_mem.mem_core);
     req                           = '1;
     f2.data_mem1.mem_core[0][7:0] = int_in[15:8];  // load operands into memory
     f2.data_mem1.mem_core[1][7:0] = int_in[7:0];
@@ -88,7 +89,7 @@ module int2flt_tbA ();
     flt_out2[15]                  = sgn;
     flt_out3[15]                  = sgn;
     #20ns req = '0;
-    #40ns wait (ack || ack0);  // whicheve ack comes first
+    #2000ns wait (ack || ack0);  // whicheve ack comes first
     flt_out2[14:0] = {
       f2.data_mem1.mem_core[2][7:0], f2.data_mem1.mem_core[3][7:0]
     };  // read results from memory

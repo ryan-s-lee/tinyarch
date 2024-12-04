@@ -58,7 +58,7 @@ ban r7
 
 
 // decide whether to skip sign flip
-skp 4
+nzs 4
 mvi .get_exp hi
 mov r6 r7
 mvi .get_exp lo
@@ -81,7 +81,7 @@ sti UNSIGNHI
 sac r3
 mov r1 r3
 bor r2 r3
-skp 4
+nzs 4
 sac r1  # if r1 and r2 were nonzero, we would have skipped this. so r1 = 0
 sti OUTHI
 sti OUTLO
@@ -104,12 +104,12 @@ sho
 sac r3
 adi 1
 
-// loop back to beginning of while loop
+// if {r1, r2} != 0, loop back to beginning of while loop
 sac r4
 mov r4 r1
 bor r2
 lne
-skp 4
+nzs 4
 mvi .get_exp_l hi
 mov r6 r7
 mvi .get_exp_l lo
@@ -124,13 +124,33 @@ bne         # negate it
 adi 1
 mvi 10      # add 10 to the negated exponent
 adr r7
+// now, r4 = 10 - exponent. This is the shift amount.
 
-mvi 0x03    # prepare mask to extract mantissa only
+// before we get our mantissa, we have to load the input containing the mantissa back into {r1, r2}.
+sac r1
+ldi INHI
+sac r2
+ldi INLO
+
+// move mantissa into place. If r4 is negative, move r2 first. Otherwise, move r1.
+sac r5      # let r5 decide whether to shift right or not.
+mov r5 r4
+mvi 0x80    # mask sign bit
+ban r7
+nzs 5       # if r5 is nonzero, then r4 (the shift amount) was negative. shift r1 first.
+sac r2      # r4 was positive if we reached this instruction. shift r2 first.
+lsh r4      
+sac r1      # continue shift with r1
+sho
+skp 4       # skip the next 4 instructions, which are used to shift r1 to the right first.
 sac r1      # shift {r1, r2} by r4, which is the amount needed to shift mantissa into place
-lsh r4      # note that if r4 is negative, a right shift will occur (as intended)
-and r7      # mask mantissa
+lsh r4
 sac r2      # continue shift with r2
 sho
+
+// mask mantissa
+mvi 0x03    # prepare mask to extract mantissa only
+and r7      # mask mantissa
 
 // Now that we've used the exponent to determine the shift amount
 // we have the opportunity to bias it and shift it into place
@@ -148,6 +168,7 @@ bor r1
 sti OUTHI
 sac r2
 sti OUTLO
+ext
 ```
 
 # Program 2: float 2 int
@@ -181,7 +202,83 @@ sfp r7
 sac r2          # put low bits of input into r2
 ldi INLO
 
+// get the exponent
 sac r0          # set accumulator to r0
+ldi INHI        # get high bits, where exponent is located
+mvi 0x3e        # get exponent mask
+and r7          # mask exponent
+rsi 2           # shift exponent into place
+mvi -15
+adr r7
+
+// if exponent is negative, exit early
+sac r1          # r1 will store our decision
+mov r1 r0       # r0 is the exponent we want to check
+mvi 0x80        # mask the sign bit out
+bad r7
+lne             # if sign bit is 1 (negative), do NOT skip. So, NOT it.
+nzs 4
+sti OUTLO
+sti OUTHI
+ext
+
+// exponent is not negative. We have an actual nonzero integer on our hands
+// Compute the amount we have to shift the mantissa with leading 1 to obtain
+// final answer
+sac r0
+mvi -10
+adr r7
+
+//get the mantissa, stored in {r2, r3}
+sac r3          # do low mantissa first; want to operate on high mantissa after
+ldi INLO
+sac r2          # now do high mantissa
+ldi INHI
+mov r4 r2       # we will need the high mantissa again later to obtain the sign
+mvi 0x03        # mask non-mantissa bits
+ban r7
+
+// stick a one in front of the mantissa
+mvi 0x04
+bor r7
+
+// shift the mantissa with the 1 until it becomes the integer value
+// recall the shift amount was stored in r0
+sac r5      # let r5 decide whether we will shift {r2, r3} right or not.
+mov r5 r0
+mvi 0x80    # mask sign bit
+ban r7
+nzs 5       # if r5 is nonzero, then r0 (the shift amount) was negative. shift r1 first.
+sac r3      # r0 was positive if we reached this instruction. shift r2 first.
+lsh r0      
+sac r2      # continue shift with r1
+sho
+skp 4       # skip the next 4 instructions, which are used to shift r1 to the right first.
+sac r2      # shift {r2, r3} by r4, which is the amount needed to shift mantissa into place
+lsh r0
+sac r3      # continue shift with r2
+sho
+
+// if the float was signed, negate.
+// utilize r4, which was had the high input bits moved in earlier.
+sac r4
+mvi 0x80    # mask sign bit
+ban r7
+lne         # if sign is negative (1), DONT skip. so we have to NOT r4.
+nzs 4
+sac r3
+bne
+adi 1
+sac r2
+bne
+adc
+
+// Final integer is stored in {r2, r3}.
+sac r2
+sti OUTHI
+sac r3
+sti OUTLO
+ext
 ```
 
 # Program 3: float addition
@@ -233,4 +330,11 @@ float_add(f1, f2):
             exp += 1
             sum >> 1
     result = {sign[0], exp[4:0], sum[9:0]}
+```
+
+## Assembly
+```
+// I'll worry about this later lol
+// It looks like a beast
+// Wish I had a compiler to slay it
 ```
