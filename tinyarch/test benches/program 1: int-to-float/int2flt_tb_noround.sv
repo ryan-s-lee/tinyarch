@@ -28,7 +28,7 @@ module int2flt_tb_noround();
 	.start(req),
     .reset(reset),
     .done (ack0));	         // 
-  int2flt f1(				 // your DUT goes here
+  tinyarch f1(				 // your DUT goes here
     .clk  (clk),			 // rename module & ports
     .start(req),			 //  as necessary
 	.reset(reset),			 //  
@@ -95,6 +95,7 @@ module int2flt_tb_noround();
     logic       sgn_M;						   // mathemtaical answer sign
     logic[ 4:0] exp_M;						   //                     exponent
     logic[11:0] mant_M;						   //					  mantissa
+    $readmemb("p1.bin", f1.instr_mem.mem_core);
     req = '1;
 	f0.data_mem1.mem_core[1] = int_in[15:8];   // load operands into my memory
 	f0.data_mem1.mem_core[0] = int_in[ 7:0];
@@ -103,7 +104,7 @@ module int2flt_tb_noround();
 	sgn_M             = int_in[15]; 		   // 
 //    flt_out_M[15]     = sgn_M;                 // sign is a passthrough
 	#20ns req           = '0;
-	#40ns wait(ack || ack0);                        // whicheve ack comes first
+	#4000ns wait(ack || ack0);                        // whicheve ack comes first
     flt_out0 = {f0.data_mem1.mem_core[3],f0.data_mem1.mem_core[2]};	 // results from my dummy DUT
   	flt_out  = {f1.data_mem1.mem_core[3],f1.data_mem1.mem_core[2]};	 // results from your memory
     $display("what's feeding the case %b",int_in);

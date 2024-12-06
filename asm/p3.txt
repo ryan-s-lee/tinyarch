@@ -1,0 +1,181 @@
+mvi 128
+sfp r7
+sac r0
+ldi 0
+mvi 0x80
+ban r7
+sti 6
+ldi 0
+mvi 0x7c
+ban r7
+rsi 2
+sti 7
+ldi 0
+mvi 0x3
+ban r7
+mvi 0x04
+bor r7
+sti 9
+ldi 2
+mvi 0x7c
+ban r7
+rsi 2
+sti 8
+ldi 2
+mvi 0x3
+ban r7
+mvi 0x04
+bor r7
+sti 11
+ldi 7
+lne
+nzs 4
+mvi .f1_exp_zero_check hi
+mov r6 r7
+mvi .f1_exp_zero_check lo
+jmp
+ldi 9
+mvi 0x3  
+ban r7
+mov r1 r0
+ldi 1
+bor r1
+nzs 5
+ldi 2
+sti 4
+ldi 3
+sti 5
+ext
+ldi 9
+mvi 0xfb    
+ban r7
+sti 9
+ldi 7
+adi 1
+sti 7
+ldi 8
+lne
+nzs 4
+mvi .get_expdiff hi
+mov r6 r7
+mvi .get_expdiff lo
+jmp
+ldi 11
+mvi 0x3  
+ban r7
+mov r1 r0
+ldi 3
+bor r1
+nzs 5
+ldi 0
+sti 4
+ldi 1
+sti 5
+ext
+ldi 11
+mvi 0xfb    
+ban r7
+sti 11
+ldi 8
+adi 1
+sti 8
+ldi 8
+bne
+adi 1
+mov r1 r0
+ldi 7
+adr r1
+sti 13
+mvi 0x80
+ban r7
+nzs 4
+mvi .shift_f1 hi
+mov r6 r7
+mvi .shift_f1 lo
+jmp
+ldi 7
+mov r1 r0
+ldi 8
+sti 7
+mov r0 r1
+sti 8
+ldi 9
+mov r1 r0
+ldi 11
+sti 9
+mov r0 r1
+sti 11
+ldi 1
+mov r1 r0
+ldi 3
+sti 1
+mov r0 r1
+sti 3
+ldi 13
+bne
+adi 1
+sti 13
+ldi 13
+mov r1 r0
+ldi 11
+rsr r1
+sti 11
+ldi 3
+sho
+sti 3
+ldi 11
+mov r3 r0
+ldi 9
+mov r2 r0
+ldi 3
+mov r1 r0
+ldi 1
+adr r1
+sac r2
+adc
+adr r3
+sti 15
+sac r0
+sti 14
+ldi 15
+mvi 0x08
+ban r7
+nzs 4           
+mvi .mantsumhi_bit2_check hi
+mov r6 r7
+mvi .mantsumhi_bit2_check lo
+jmp
+ldi 15
+rsi 1
+sti 15
+ldi 14
+sho
+sti 14
+ldi 7
+adi 1
+sti 7
+mvi .avengers_assemble hi
+mov r6 r7
+mvi .avengers_assemble lo
+jmp
+ldi 15
+mvi 0x04
+ban r7
+nzs 3
+mvi 0
+mov r7 r0
+sti 7
+ldi 15
+mvi 0xfb
+ban r7
+mov r1 r0
+ldi 7
+lsi 2
+bor r1
+mov r1 r0
+ldi 6
+bor r1
+sti 4
+ldi 14
+sti 5
+ext

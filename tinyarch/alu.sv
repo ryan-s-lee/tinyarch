@@ -10,8 +10,6 @@ module alu (
     output logic exit
 );
 
-  // TODO: It is probably illegal to use 16 bits to store the outshifted
-  // values. Ask a TA about this.
   logic [15:0] shift_buffer;
   logic last_shift_dir;  // 0 is left, 1 is right
   logic [7:0] last_shift_amount;

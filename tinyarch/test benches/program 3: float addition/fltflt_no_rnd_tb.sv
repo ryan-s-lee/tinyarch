@@ -41,7 +41,7 @@ module fltflt_tb();
 	.reset (reset),
 	.done  (done_test));
 
-  fltflt t1     (                 // your DUT would go here
+  tinyarch t1     (                 // your DUT would go here
     .clk     (clk  ),		      // retain my dummy, above
     .start   (req  ),
 	.reset   (reset),			  // rename ports and module fltflt
@@ -64,6 +64,7 @@ module fltflt_tb();
 
   initial begin			          // contrived operands
     #20ns reset = '0;
+    #20ns req = '1;
     flt1        = {1'b0, 5'h06, 10'b10_0000_0100};
     flt2        = {1'b0, 5'h06, 10'b10_0000_0100};
 	fltadd;						  // task runs program & computes theoretical answer
@@ -114,6 +115,7 @@ module fltflt_tb();
 //  end
     
   task fltadd;  	       	   	       
+    $readmemb("p3.bin", t1.instr_mem.mem_core);
     flt1_sign = flt1[15];			                    // parse into sign, exp, mant
     flt1_exp  = flt1[14:10]-15;					        // debias exponent
     flt1_mant = {|flt1[14:10],flt1[9:0]};               // restore hidden

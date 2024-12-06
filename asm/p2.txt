@@ -1,0 +1,88 @@
+mvi 4           
+sfp r7
+sac r4          
+ldi 1
+mov r2 r4       
+mvi 0x80
+ban r7
+sac r0          
+ldi 1        
+mvi 0x7c        
+ban r7          
+rsi 2           
+mvi -15         
+adr r7          
+sac r1          
+mov r1 r0       
+mvi 0x80        
+ban r7
+lne             
+nzs 3
+sti 2
+sti 3
+ext
+mov r1 r0       
+mvi -15         
+adr r7
+mvi 0x80        
+ban r7          
+lne             
+nzs 4           
+mvi .handle_nontrivial hi       
+mov r6 r7
+mvi .handle_nontrivial lo
+jmp
+sac r4
+nzs 6
+sac r7
+mvi 0x7f
+sti 3
+mvi 0xff
+sti 2
+ext
+sti 3       
+sac r7
+mvi 0x00
+sti 2
+ext
+sac r0          
+mvi -10         
+adr r7          
+sac r3          
+ldi 0
+sac r2          
+mvi 0x03        
+ban r7
+mvi 0x04
+bor r7
+sac r5      
+mov r5 r0
+mvi 0x80    
+ban r7
+nzs 5       
+sac r3      
+lsr r0      
+sac r2      
+sho
+skp 7       
+sac r0      
+bne
+adi 1
+sac r2      
+rsr r0
+sac r3      
+sho
+sac r4
+lne         
+nzs 4
+sac r3
+bne
+adi 1
+sac r2
+bne
+adc
+sac r2
+sti 3
+sac r3
+sti 2
+ext

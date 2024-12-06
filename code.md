@@ -338,3 +338,45 @@ float_add(f1, f2):
 // It looks like a beast
 // Wish I had a compiler to slay it
 ```
+
+# Program 3 Revisited - No Rounding
+
+## Pseudocode
+```
+def add(f0hi, f0lo, f1hi, f1lo):
+    byte outhi, outlo;  # the final answer
+    byte sign, f0exp, f1exp, f0manthi, f0mantlo, f1manthi, f1mantlo;  # the pieces of the answer
+    byte expdiff
+    # the sign is guaranteed to be the same, so always perform addition and tack
+    # the sign on later.
+    
+    # extract sign from f0hi
+    # extract biased exponents and hi mantissas from f0hi and f1hi
+    # place the implied 1 in front of both mantissas (will be undone for denormed floats)
+    # if f0exp is 0:
+        # if f0manthi | f0mantlo is 0: (that is, mantissa is 0)
+            return f1, because we'd be adding f1 to 0.
+        # else, exponent must be 0 and mantissa is nonzero:
+            # 0 out the implied 1 in f0hi.
+            # add 1 to f0exp
+    # if f1exp is 0:
+        # if f1manthi | f1mantlo is 0: (that is, mantissa is 0)
+            return f0, because we'd be adding f0 to 0.
+        # else, exponent must be 0 and mantissa is nonzero:
+            # 0 out the implied 1 in f1hi.
+            # add 1 to f1exp
+    # get expdiff = f0exp - f1exp
+    # if expdiff < 0, then f1exp >= f0exp. 
+        # We will always rightshift f1exp, so swap f0 values with f1 values
+        # also, flip expdiff sign.
+    # 
+    # rightshift {f1manthi, f1mantlo} by expdiff
+    # add the mantissas; no need to account for rounding to nearest even
+    # if mantissa sum bit3 is 1:
+        # shift down summed mantissa by 1
+        # increment exponent by 1
+    # else, no carry (bit3 is 0), so if bit2 is 0, set exponent to be 0.
+    # zero out bit3 in f0manthi, in preparation for assembly
+    # assemble sign, f0exp, and f0manthi into first word outhi.
+    # return {outhi, f0mantlo}
+```

@@ -2,8 +2,10 @@ mvi 0
 sfp r7
 sac r2          
 ldi 0
+sti 6
 sac r0          
 ldi 1        
+sti 7
 mov r1 r0       
 mvi 0x80        
 ban r7
@@ -18,6 +20,9 @@ adi 1
 sac r1
 bne
 adc
+sti 7
+sac r2
+sti 6
 sac r3
 mov r3 r1
 bor r2 r3
@@ -50,9 +55,9 @@ adi 1
 mvi 10      
 adr r7
 sac r1
-ldi 1
+ldi 7
 sac r2
-ldi 0
+ldi 6
 sac r5      
 mov r5 r4
 mvi 0x80    

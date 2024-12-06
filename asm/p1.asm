@@ -15,10 +15,12 @@ mvi 0           # set frame pointer to address 0
 sfp r7
 sac r2          # put low bits of input into r2. It will become the mantissa.
 ldi INLO
+sti MANTLO
 
 sac r0          # set accumulator to r0
 ldi INHI        # load high input bits into r0 from mem. r0 will be the sign.
-mov r1 r0       # copy high input bits into r1. It will become the exponent.
+sti MANTHI
+mov r1 r0       # copy high input bits into r1.
 
 // determine sign
 mvi 0x80        # mask only the high bits
@@ -40,6 +42,9 @@ adi 1
 sac r1
 bne
 adc
+sti MANTHI
+sac r2
+sti MANTLO
 
 // at this moment we have the unsigned int. if it is 0, the original input was
 // 0 and we should exit right away, as the remaining code requires the input
@@ -94,9 +99,9 @@ adr r7
 
 // before we get our mantissa, we have to load the input containing the mantissa back into {r1, r2}.
 sac r1
-ldi INHI
+ldi MANTHI
 sac r2
-ldi INLO
+ldi MANTLO
 
 // move mantissa into place. If r4 is negative, move r2 first. Otherwise, move r1.
 // TODO: Fix this! The shift amount is wrong. We can only shift between 1-8
