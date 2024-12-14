@@ -169,9 +169,12 @@ module fltflt_tb();
 	$display("flt3_for_diff = %18.10f",(real'(flt3_mant)/1024.0)*real'(2.0**flt3_exp));
 	$display("diff = %18.10f",flt3_real - (real'(flt3_mant)/1024.0)*real'(2.0**flt3_exp));
     $display("flt3_real/100.0 = %18.10f",flt3_real/100.0);
+
 	if((flt3_real == (real'(flt3_mant)/1024.0)*real'(2.0**flt3_exp)) || (flt3_real - (real'(flt3_mant)/1024.0)*2**flt3_exp < flt3_real/100.0 &&
-	   flt3_real - (real'(flt3_mant)/1024.0)*2**flt3_exp > -flt3_real/100.0))
+    flt3_real - (real'(flt3_mant)/1024.0)*2**flt3_exp > -flt3_real/100.0)) begin
       score1 ++;
+    end
+    $display("flt3 = %b,  flt3_test = %b", flt3, flt3_test);
     if(flt3==flt3_test)					      // your DUT matches my dummy DUT
 	  score2 ++;           
 //    if(int_out == int1[14:0]) score2++;   
